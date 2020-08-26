@@ -14,7 +14,8 @@ html {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  width: 80%;
+  width: 70%;
+  max-width: 1000px;
   margin: auto;
   min-height: calc(100vh - 4.5rem);
 }
@@ -40,13 +41,15 @@ header h3 {
   -moz-box-shadow: 0 2px 3px rgba(136, 136, 136, 0.671);
   -webkit-box-shadow: 0 2px 3px rgba(136, 136, 136, 0.671);
   box-shadow: 0 2px 3px rgba(136, 136, 136, 0.671);
+  align-self: flex-start;
 }
 
 td:first-child {
   font-weight: bold;
+  width: 6rem;
 }
 
- tr {
+tr {
   display: block;
   padding: 0.1rem;
 }
@@ -98,4 +101,45 @@ td:first-child {
   padding: 0.3rem 0.5rem;
   color: white;
   border-radius: 0.4rem;
+}
+
+@media only screen and (max-width: 700px) {
+
+  html {
+    font-size: 12px;
+  }
+
+  .user-card img {
+    width: 30px;
+  }
+
+  td:first-child {
+    width: 5rem;
+  }
+
+}
+
+@media only screen and (max-width: 500px) {
+
+  header {
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    height: 6rem;
+  }
+
+  header h3 {
+    margin-right: 0;
+  }
+
+  header select {
+    width: 90%;
+    margin-top: 0.3rem;
+  }
+
+  .rep-info, .contrib-list {
+    flex: 1 100%;
+  }
+  
+
 }
