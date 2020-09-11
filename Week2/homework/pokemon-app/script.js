@@ -13,7 +13,6 @@ function fetchData(url, callback) {
 }
 
 function addPokemonToDOM(res) {
-    document.getElementById('showImg').innerHTML = '';
     let img = document.createElement('img');
     img.src = res.sprites.front_shiny;
     document.getElementById('showImg').appendChild(img);
