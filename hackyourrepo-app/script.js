@@ -18,6 +18,12 @@ window.onload = () => {
   header.appendChild(repoInput);
   containerDiv.appendChild(header);
 
+  let errorDiv = document.createElement('div');
+  errorDiv.className = 'error';
+  errorDiv.innerHTML = '<h4>Network request failed</h4>';
+  errorDiv.style.display = 'none';
+  containerDiv.appendChild(errorDiv);
+
   let repInfoSection = document.createElement('section');
   repInfoSection.className = 'rep-info';
   let repInfoTable = document.createElement('table');
@@ -48,6 +54,9 @@ window.onload = () => {
       return row;
     }
 
+    errorDiv.style.display = 'none';
+    repInfoSection.style.display = 'block';
+    contribListSection.style.display = 'block';
     let currentRepoIndex = repoInput.selectedIndex;
     repInfoTable.innerHTML = '';
     repInfoTable.appendChild(createRow('Repository', `<a href="https://github.com/HackYourFuture/${data[currentRepoIndex].name}" target="_blank">${data[currentRepoIndex].name}</a>`));
@@ -62,7 +71,10 @@ window.onload = () => {
   function showContribList(data) {
     contribListContentDiv.innerHTML = '';
     fetch(data.contributors_url)
-      .then(response => {return response.json()})
+      .then(response => {
+        if(response.ok) return response.json();
+        throw new Error('Connection Failed');
+      })
       .then(contribData => {
         contribData.forEach(person => {
           let card = document.createElement('div');
@@ -81,14 +93,24 @@ window.onload = () => {
         })
       })
       .catch(error => {
-        console.log(error);
+        showError();
       });
+  }
+
+  //Function to show an error
+  function showError() {
+    errorDiv.style.display = 'flex';
+    repInfoSection.style.display = 'none';
+    contribListSection.style.display = 'none';
   }
 
   // Filling repo-list
   const url = 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100';
   fetch(url)
-    .then(response => {return response.json()})
+    .then(response => {
+      if(response.ok) return response.json();
+      throw new Error('Connection Failed');
+    })
     .then(data => {
       data.forEach(repo => {
         let option = document.createElement('option');
@@ -99,9 +121,7 @@ window.onload = () => {
       repoInput.addEventListener('change', showRepoInfo.bind(null, data));
     })
     .catch(error => {
-      console.log(error);
+      showError();
     });
 }
 
-// Add if status===ok
-// Add error handlers
