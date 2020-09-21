@@ -1,0 +1,46 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+h1, h4 {
+    margin: 1rem 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+.game {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.question, .answer {
+    width: 100%;
+    background: rgba(209, 209, 209, 0.473);
+    padding: 1rem;
+}
+
+.answer {
+    background: white;
+    display: none;
+}
+
+.question:hover {
+    background: rgb(209, 209, 209);
+    cursor: pointer;
+}
+
+.visible {
+    display: block;
+}
+
+.error {
+    padding: 1rem;
+    background: rgba(221, 102, 102, 0.418);
+    color: rgb(136, 19, 19);
+}

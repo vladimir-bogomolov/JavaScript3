@@ -19,9 +19,14 @@ async function main() {
     // get data from API
     game.textContent = 'Loading...';
     let data = await getData(game);
-    console.log(data);
+ 
     // put questions to page
     createGame(data, game);
+
+    let questions = document.querySelectorAll('.question');
+    questions.forEach(element => {
+        element.addEventListener('click', hideShow);
+    })
 }
 
 async function getData(errorHolder) {
@@ -41,16 +46,27 @@ async function getData(errorHolder) {
 function createGame(data, gameHolder) {
     data.forEach((item, index) => {
         let question = document.createElement('div');
-        question.textContent = item.question;
+        question.textContent = decodeHtml(item.question);
         question.className = 'question';
         question.id = index;
         let answer = document.createElement('div');
-        answer.textContent = item.correct_answer;
+        answer.textContent = decodeHtml(item.correct_answer);
         answer.className = 'answer';
         answer.id = `answer${index}`;
         gameHolder.appendChild(question);
         gameHolder.appendChild(answer);
     });
+}
+
+function decodeHtml(string) {
+    let txt = document.createElement('textarea');
+    txt.innerHTML = string;
+    return txt.value;
+}
+
+function hideShow(event) {
+    let index = event.target.id;
+    document.getElementById(`answer${index}`).classList.toggle('visible');
 }
 
 window.onload = main;
