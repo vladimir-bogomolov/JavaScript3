@@ -19,6 +19,7 @@ export function showRepoInfo(data, htmlStructure, showContribList) {
     htmlStructure.repInfoTable.appendChild(createRow('Description', data[currentRepoIndex].description));
     htmlStructure.repInfoTable.appendChild(createRow('Forks', data[currentRepoIndex].forks));
     htmlStructure.repInfoTable.appendChild(createRow('Updated', data[currentRepoIndex].updated_at.replace(/[A-Z]/g, ' ')));
+    htmlStructure.pageCounter.innerHTML = '';
     if(showContribList) showContribList(data[currentRepoIndex], htmlStructure);
     return data[currentRepoIndex];
 }

@@ -19,5 +19,6 @@ export function createHtmlStructure() {
   let contribListSection = createHtml('section', containerDiv, 'contrib-list');
   let contribListHeaderDiv = createHtml('div', contribListSection, 'contrib-list-header', `<p>Contributors</p>`);
   let contribListContentDiv = createHtml('div', contribListSection, 'contrib-list-content');
-  return {containerDiv, footerSection, header, headerH3, repoInput, errorDiv, repInfoSection, repInfoTable, contribListSection, contribListHeaderDiv, contribListContentDiv};
+  let pageCounter = createHtml('div', contribListSection, 'page-counter');
+  return {containerDiv, footerSection, header, headerH3, repoInput, errorDiv, repInfoSection, repInfoTable, contribListSection, contribListHeaderDiv, contribListContentDiv, pageCounter};
 }

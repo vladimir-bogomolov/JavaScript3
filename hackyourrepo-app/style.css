@@ -117,6 +117,29 @@ tr {
   border-radius: 0.4rem;
 }
 
+.page-counter {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem;
+  color: #3D79B8;
+  font-weight: bold;
+}
+
+.page-counter div {
+  padding: 0.5rem;
+  border: 0.1px solid #3d79b854;
+}
+
+.page-counter div:not(.current):hover {
+  background: rgba(176, 183, 207, 0.733);
+  cursor: pointer;
+}
+
+.current {
+  background:#3D79B8;
+  color: white;
+}
+
 @media only screen and (max-width: 700px) {
 
   html {
