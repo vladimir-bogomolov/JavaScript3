@@ -26,7 +26,16 @@ async function main() {
     let questions = document.querySelectorAll('.question');
     questions.forEach(element => {
         element.addEventListener('click', hideShow);
-    })
+    });
+    // hide all answers if clicked outside container
+    document.body.addEventListener('click', (event) => {
+        if (!container.contains(event.target)) {
+            let answers = document.querySelectorAll('.answer');
+            answers.forEach(item => {
+                item.className = 'answer';
+            });
+        }
+    });
 }
 
 async function getData(errorHolder) {
