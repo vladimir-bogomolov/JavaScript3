@@ -1,127 +1,26 @@
 "use strict";
+import { createHtmlStructure } from '/util/createHTML.js';
+import { showRepoInfo } from '/util/showRepoInfo.js';
+import { showContribList } from '/util/showContributors.js';
+import { showError } from '/util/showError.js';
+import { fillRepoList } from '/util/fillRepoList.js';
 
-window.onload = () => {
-  // Creating HTML structure
-  let containerDiv = document.createElement('div');
-  containerDiv.className = 'container';
-  document.body.appendChild(containerDiv);
-  let footerSection = document.createElement('section');
-  footerSection.className = 'footer';
-  document.body.appendChild(footerSection);
-  footerSection.innerHTML = `<h4>HYF Repositories</h4>`;
 
-  let header = document.createElement('header');
-  let headerH3 = document.createElement('h3');
-  headerH3.textContent = 'HYF Repositories';
-  header.appendChild(headerH3);
-  let repoInput = document.createElement('select');
-  header.appendChild(repoInput);
-  containerDiv.appendChild(header);
-
-  let errorDiv = document.createElement('div');
-  errorDiv.className = 'error';
-  errorDiv.innerHTML = '<h4>Network request failed</h4>';
-  errorDiv.style.display = 'none';
-  containerDiv.appendChild(errorDiv);
-
-  let repInfoSection = document.createElement('section');
-  repInfoSection.className = 'rep-info';
-  let repInfoTable = document.createElement('table');
-  repInfoSection.appendChild(repInfoTable);
-  containerDiv.appendChild(repInfoSection);
-
-  let contribListSection = document.createElement('section');
-  contribListSection.className = 'contrib-list';
-  let contribListHeaderDiv = document.createElement('div');
-  contribListHeaderDiv.className = 'contrib-list-header';
-  contribListHeaderDiv.innerHTML = `<p>Contributors</p>`;
-  contribListSection.appendChild(contribListHeaderDiv);
-  let contribListContentDiv = document.createElement('div');
-  contribListContentDiv.className = 'contrib-list-content';
-  contribListSection.appendChild(contribListContentDiv);
-  containerDiv.appendChild(contribListSection);
-
-  // Function to show repo info
-  function showRepoInfo(data) {
-    function createRow(firstCol, secondCol) {
-      let row = document.createElement('tr');
-      let firstTd = document.createElement('td');
-      firstTd.innerText = firstCol +':';
-      let secondTd = document.createElement('td');
-      secondTd.innerHTML = secondCol;
-      row.appendChild(firstTd);
-      row.appendChild(secondTd);
-      return row;
-    }
-
-    errorDiv.style.display = 'none';
-    repInfoSection.style.display = 'block';
-    contribListSection.style.display = 'block';
-    let currentRepoIndex = repoInput.selectedIndex;
-    repInfoTable.innerHTML = '';
-    repInfoTable.appendChild(createRow('Repository', `<a href="https://github.com/HackYourFuture/${data[currentRepoIndex].name}" target="_blank">${data[currentRepoIndex].name}</a>`));
-    repInfoTable.appendChild(createRow('Description', data[currentRepoIndex].description));
-    repInfoTable.appendChild(createRow('Forks', data[currentRepoIndex].forks));
-    repInfoTable.appendChild(createRow('Updated', data[currentRepoIndex].updated_at.replace(/[A-Z]/g, ' ')));
-    showContribList(data[currentRepoIndex]);
+window.onload = async () => {
+  let htmlStructure = createHtmlStructure();
+  let data;
+  try {
+    data = await fillRepoList(htmlStructure);
+  } catch {
+    showError(htmlStructure);
   }
-
-  // Function to show list of contributors
-
-  function showContribList(data) {
-    contribListContentDiv.innerHTML = '';
-    fetch(data.contributors_url)
-      .then(response => {
-        if(response.ok) return response.json();
-        throw new Error('Connection Failed');
-      })
-      .then(contribData => {
-        contribData.forEach(person => {
-          let card = document.createElement('div');
-          card.className = 'user-card';
-          let avatar = document.createElement('img');
-          avatar.src = person.avatar_url;
-          card.appendChild(avatar);
-          let name = document.createElement('a');
-          name.innerHTML = `<a href="https://github.com/${person.login}">${person.login}</a>`;
-          card.appendChild(name);
-          let contributions = document.createElement('div');
-          contributions.className = 'contrib-number';
-          contributions.innerText = person.contributions;
-          card.appendChild(contributions);
-          contribListContentDiv.appendChild(card);
-        })
-      })
-      .catch(error => {
-        showError();
-      });
+  let currentRepo = showRepoInfo(data, htmlStructure);
+  try {
+    await showContribList(currentRepo, htmlStructure);
+  } catch {
+    showError(htmlStructure);
   }
+  htmlStructure.repoInput.addEventListener('change', showRepoInfo.bind(null, data, htmlStructure, showContribList));
 
-  //Function to show an error
-  function showError() {
-    errorDiv.style.display = 'flex';
-    repInfoSection.style.display = 'none';
-    contribListSection.style.display = 'none';
-  }
-
-  // Filling repo-list
-  const url = 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100';
-  fetch(url)
-    .then(response => {
-      if(response.ok) return response.json();
-      throw new Error('Connection Failed');
-    })
-    .then(data => {
-      data.forEach(repo => {
-        let option = document.createElement('option');
-        option.innerText = repo.name;
-        repoInput.appendChild(option);
-      });
-      showRepoInfo(data);
-      repoInput.addEventListener('change', showRepoInfo.bind(null, data));
-    })
-    .catch(error => {
-      showError();
-    });
 }
 
